@@ -1,4 +1,6 @@
 ﻿using Business.Abstract;
+using Business.Constants;
+using Core.Utilities.Results;
 using DataAccess.Abstract;
 using Entitites.Concrete;
 using Entitites.DTOs;
@@ -10,7 +12,7 @@ using System.Threading.Tasks;
 
 namespace Business.Concrete
 {
-    public class CarManager:ICarService
+    public class CarManager : ICarService
     {
         ICarDal _carDal;
 
@@ -19,24 +21,56 @@ namespace Business.Concrete
             _carDal=carDal;
         }
 
-        public List<Car> GetAll()
+        public IResult Add(Car car)
         {
-            return _carDal.GetAll();
+            if (car.Description.Length < 2 && car.DailyPrice>0)
+            {
+                return new ErrorResult(Messages.CarNameInvalid);
+            }
+            _carDal.Add(car);
+            return new SuccessResult(Messages.CarAdded);
+
         }
 
-        public List<Car> GetByDailyPrice(int min, int max)
+        public IResult Delete(Car car)
         {
-            return _carDal.GetAll(c => c.DailyPrice<=max && c.DailyPrice>=min);
+            _carDal.Delete(car);
+            return new SuccessDataResult<Car>(Messages.CarDeleted);
         }
 
-        public List<Car> GetById(int id)
+        public IDataResult<List<Car>> GetAll()
         {
-            return _carDal.GetAll(c =>c.Id == id);
+            if (DateTime.Now.Hour == 11)
+            {
+                return new ErrorDataResult<List<Car>>(Messages.MaintenanceTime);
+            }
+            return new SuccessDataResult<List<Car>>(_carDal.GetAll(), "Arablar Listelendi.");
         }
 
-        public List<CarDetailDto> GetCarDetails()
+        public IDataResult<Car> GetByDailyPrice(int min, int max)
         {
-            return _carDal.GetCarDetails();
+            return new DataResult<Car>(_carDal.Get(c => c.DailyPrice<=max&&c.DailyPrice>=min), true);
         }
+
+        public IDataResult<Car> GetById(int id)
+        {
+            return new DataResult<Car>(_carDal.Get(c => c.Id == id), true);
+        }
+
+        public IDataResult<List<CarDetailDto>> GetCarDetails()
+        {
+            if (DateTime.Now.Hour == 22)
+            {
+                return new ErrorDataResult<List<CarDetailDto>>(Messages.MaintenanceTime);
+            }
+            return new SuccessDataResult<List<CarDetailDto>>(_carDal.GetCarDetails(), "Arablar Listelendi.");
+        }
+
+        public IResult Update(Car car)
+        {
+            _carDal.Update(car);
+            return new SuccessDataResult<Car>(Messages.CarUpdated);
+        }
+
     }
 }
