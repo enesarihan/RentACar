@@ -32,5 +32,7 @@ namespace Business.Constants
         public static string RentalAdded= "Rental has been successfuly added.";
         public static string RentalDeleted= "Rental has been successfuly deleted.";
         public static string RentalUpdated= "Rental has been successfuly updated.";
+        public static string CarCountOfBrandError="Brand Count invalid.";
+        public static string ProductNameAlreadyExist="This Name Already Exist!";
     }
 }

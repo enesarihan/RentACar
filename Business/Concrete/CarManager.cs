@@ -3,6 +3,7 @@ using Business.Constants;
 using Business.ValidationRules.FluentValidation;
 using Core.Aspects.Autofac.Validation;
 using Core.CrossCuttingConcerns.Validation;
+using Core.Utilities.Business;
 using Core.Utilities.Results;
 using DataAccess.Abstract;
 using Entitites.Concrete;
@@ -11,6 +12,7 @@ using FluentValidation;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.ConstrainedExecution;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -28,10 +30,14 @@ namespace Business.Concrete
         [ValidationAspect(typeof(CarValidator))]
         public IResult Add(Car car)
         {
-
+            var result =BusinessRules.Run(CheckCarBrandMax(car.BrandId), CheckCarDescriptionNotSame(car.Description));
+            if (result != null)
+            {
+                return result;
+            }
             _carDal.Add(car);
             return new SuccessResult(Messages.CarAdded);
-
+            
         }
 
         public IResult Delete(Car car)
@@ -75,5 +81,25 @@ namespace Business.Concrete
             return new SuccessDataResult<Car>(Messages.CarUpdated);
         }
 
+        private IResult CheckCarBrandMax(int brandId)
+        {
+            var result = _carDal.GetAll(c => c.BrandId==brandId).Count;
+            if (result>=10)
+            {
+                return new ErrorResult(Messages.CarCountOfBrandError);
+            }
+            return new SuccessResult();
+        }
+
+        private IResult CheckCarDescriptionNotSame(string description)
+        {
+            var result = _carDal.GetAll(c=>c.Description==description).Any();
+            if (result)
+            {
+                return new ErrorResult(Messages.ProductNameAlreadyExist);
+            }
+            return new SuccessResult();
+           
+        }
     }
 }

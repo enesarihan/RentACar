@@ -25,6 +25,7 @@ namespace Business.Concrete
         [ValidationAspect(typeof(RentalValidator))]
         public IResult Add(Rental rental)
         {
+            
             _rentalDal.Add(rental);
             return new SuccessDataResult<Rental>(Messages.RentalAdded);
         }
