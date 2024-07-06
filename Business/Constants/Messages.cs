@@ -43,7 +43,8 @@ namespace Business.Constants
         public static string UserRegistered = "User successfully registered";
         public static string AccessTokenCreated = "Access token successfully created";
         public static string ProductNameAlreadyExists = "Product name already exists";
-
-
+        public static string CarListed = "All Car has been successfuly listed.";
+        public static string BrandListed= "All Car has been successfuly listed.";
+        public static string RentalListed= "Rental has been listed";
     }
 }

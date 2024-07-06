@@ -20,6 +20,8 @@ namespace WebAPI.Controllers
         [HttpGet("getAll")]
         public IActionResult GetAll()
         {
+            Thread.Sleep(1000);
+
             var result = _carService.GetAll();
             if (result.Success)
             {
@@ -58,7 +60,7 @@ namespace WebAPI.Controllers
             }
             return BadRequest(result.Message);
         }
-        [HttpPost("Update")]
+        [HttpPost("update")]
         public IActionResult Update(Car car)
         {
             var result = _carService.Update(car);
@@ -67,6 +69,17 @@ namespace WebAPI.Controllers
                 return Ok(result);
             }
             return BadRequest(result.Message);
+        }
+
+        [HttpGet("getcardetail")]
+        public IActionResult GetCarDetail()
+        {
+            var result = _carService.GetCarDetails();
+            if (result.Success)
+            {
+                return Ok(result);
+            }
+            return BadRequest(result);
         }
 
     }

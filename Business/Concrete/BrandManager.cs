@@ -41,12 +41,12 @@ namespace Business.Concrete
 
         public IDataResult<List<Brand>> GetAll()
         {
-            return new SuccessDataResult<List<Brand>>(_brandDal.GetAll(), "Markalar Listelendi");
+            return new SuccessDataResult<List<Brand>>(_brandDal.GetAll(),Messages.BrandListed);
         }
 
         public IDataResult<List<Brand>> GetById(int brandId)
         {
-            return new SuccessDataResult<List<Brand>>(_brandDal.GetAll(b => b.BrandId==brandId), "Marka Listelendi");
+            return new SuccessDataResult<List<Brand>>(_brandDal.GetAll(b => b.BrandId==brandId),Messages.BrandListed);
         }
 
         [ValidationAspect(typeof(BrandValidator))]
